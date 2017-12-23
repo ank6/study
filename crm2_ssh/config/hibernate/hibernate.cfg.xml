@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- hibernate.cfg.xml 将有 spring的核心配置文件加载 -->
+<!DOCTYPE hibernate-configuration PUBLIC
+	"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+	<session-factory>
+		<!-- #1 基本4项 
+		<property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+		<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/crm_db</property>
+		<property name="hibernate.connection.username">root</property>
+		<property name="hibernate.connection.password">1234</property>
+		-->
+		<!-- #2 方言 -->
+		<property name="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</property>
+
+		<!-- #3 sql -->
+		<property name="hibernate.show_sql">true</property>
+		<property name="hibernate.format_sql">true</property>
+		<property name="hibernate.hbm2ddl.auto">update</property>
+
+		<!-- #4 取消bean校验 -->
+		<property name="javax.persistence.validation.mode">none</property>
+
+		<!-- #5 线程绑定 -->
+		<property name="hibernate.current_session_context_class">thread</property>
+
+		<!-- 配置映射文件 
+		<mapping resource="com/cskaoyan/crm/classesm/domain/CrmClass.hbm.xml" />
+		<mapping resource="com/cskaoyan/crm/coursetype/domain/CrmCourseType.hbm.xml" />
+		<mapping resource="com/cskaoyan/crm/department/domain/CrmDepartment.hbm.xml" />
+		<mapping resource="com/cskaoyan/crm/follow/domain/CrmFollow.hbm.xml" />
+		<mapping resource="com/cskaoyan/crm/graduate/domain/CrmGraduate.hbm.xml" />
+		<mapping resource="com/cskaoyan/crm/outflow/domain/CrmOutflow.hbm.xml" />
+		<mapping resource="com/cskaoyan/crm/post/domain/CrmPost.hbm.xml" />
+		<mapping resource="com/cskaoyan/crm/refer/domain/CrmRefer.hbm.xml" />
+		<mapping resource="com/cskaoyan/crm/staff/domain/CrmStaff.hbm.xml" />
+		<mapping resource="com/cskaoyan/crm/station/domain/CrmStation.hbm.xml" />
+		<mapping resource="com/cskaoyan/crm/student/domain/CrmStudent.hbm.xml" />
+		<mapping resource="com/cskaoyan/crm/transfer/domain/CrmTransfer.hbm.xml" />
+		-->
+
+	</session-factory>
+
+</hibernate-configuration>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+	<!-- 配置用户的 -->
+	<package name="fol" namespace="/follow" extends="common">
+		<action name="followAction_*" class="com.cskaoyan.crm.follow.web.action.FollowAction" method="{1}">
+			<!-- 1 查询所有 
+			<result name="findAll">/WEB-INF/pages/classesm/listClass.jsp</result>
+			-->
+			<!-- 2添加或编辑前 -->
+			<result name="preAddOrEdit">/WEB-INF/pages/follow/addOrEditFollow.jsp</result>
+			<!-- 3添加或编辑 -->
+			<result name="addOrEdit" type="redirectAction">
+				<param name="namespace">/refer</param>
+				<param name="actionName">referAction_findById?referId=${crmRefer.referId}</param>
+			</result>
+			<!-- 4通过id查询 
+			<result name="findById">/WEB-INF/pages/classesm/viewClass.jsp</result>
+			-->
+		</action>
+	</package>
+
+</struts>

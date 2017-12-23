@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.cskaoyan.crm.refer.domain.CrmRefer" table="crm_refer" >
+        <id name="referId" >
+            <generator class="uuid" />
+        </id>
+        
+        <property name="name"></property>
+        <property name="telephone"></property>
+        <property name="qq"></property>
+        <property name="createDate">
+        	<column name="createDate" sql-type="datetime"></column>
+        </property>
+        
+        <many-to-one name="crmStaff" class="com.cskaoyan.crm.staff.domain.CrmStaff"  column="staffId" />
+        
+        <property name="intentionLevel" length="50" />
+        <many-to-one name="crmClass" class="com.cskaoyan.crm.classesm.domain.CrmClass"  column="classId" />
+        <many-to-one name="crmCourseType" class="com.cskaoyan.crm.coursetype.domain.CrmCourseType"  column="courseTypeId" />
+        
+        
+        <property name="source" length="100" />
+        <property name="status" length="10" />
+        <property name="remark" length="200" />
+        
+        <set name="crmFollowSet" order-by="followTime desc">
+        	<key column="referId"></key>
+        	<one-to-many class="com.cskaoyan.crm.follow.domain.CrmFollow"/>
+        </set>
+        <!--  
+        <many-to-one name="crmStudent" class="com.cskaoyan.crm.student.domain.CrmStudent" unique="true" column="studentId"></many-to-one>
+        -->
+        <one-to-one name="crmStudent" class="com.cskaoyan.crm.student.domain.CrmStudent" foreign-key="referId"></one-to-one>
+    </class>
+</hibernate-mapping>

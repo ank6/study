@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+	<!-- 常量 -->
+	<constant name="struts.devMode" value="true"></constant>
+	<constant name="struts.ui.theme" value="simple"></constant>
+
+	<!-- 配置公共的包 
+		* 使用struts json
+	-->
+	<package name="common" namespace="/" extends="json-default">
+	
+		<!-- @2.1 配置拦截器 -->
+		<interceptors>
+			<!-- @2.1.1 注册自定义拦截器  -->
+			<interceptor name="loginInterceptor" class="com.cskaoyan.crm.web.interceptor.LoginInterceptor"></interceptor>
+			<!-- @2.1.2 将需要的拦截器进行新的组合，形成新的栈  -->
+			<interceptor-stack name="crmStack">
+				<!-- 1) 引用默认拦截器栈：需要使用struts已经完成功能 -->
+				<interceptor-ref name="defaultStack"></interceptor-ref>
+				<!-- 2) 引用 struts其他拦截器，例如：token  -->
+				<!-- 3)  引用自定义  -->
+				<interceptor-ref name="loginInterceptor">
+					<!-- 通过自定义拦截器 父类的属性，设置对哪些方法不进行拦截，多个方法之间使用逗号分隔。
+						* 除了登录和注册之外都需要拦截
+					-->
+					<param name="excludeMethods">login,register</param>
+				</interceptor-ref>
+			</interceptor-stack>
+		</interceptors>
+	
+		<!-- @2.2 声明自定义的拦截器栈，作为所有crm中action 默认拦截器栈 
+		-->
+		<default-interceptor-ref name="crmStack"></default-interceptor-ref>
+		
+		<!-- @3.2 默认action 
+		<default-action-ref name="homeAction"></default-action-ref>
+		-->
+	
+		<!-- @2.3 配置全局结果集，所有的action都可以使用,自定义拦截器拦截之后使用 -->
+		<global-results>
+			<result name="nonLogin">/WEB-INF/pages/login.jsp</result>
+			<result name="error">/WEB-INF/pages/error.jsp</result>
+			<result name="input">/WEB-INF/pages/error.jsp</result>
+		</global-results>
+		
+		<!-- @4 全局异常 ，如果hibernate hql语句执行有误，内容显示不出来
+		<global-exception-mappings>
+			<exception-mapping result="error" exception="java.lang.RuntimeException"></exception-mapping>
+		</global-exception-mappings>
+		-->
+	
+	
+		<!-- @1 ui action，用于jsp显示
+			* 访问路径：http://localhost:8080/crm/uiAction_user_inClass
+			* 没有配置class属性，将执行默认的action实现类：ActionSupprt
+				struts-default.xml ,<default-class-ref class="com.opensymphony.xwork2.ActionSupport" />
+			* 没有配置method属性，将执行默认的方法：execute
+				ActionSupport 实现了execute方法，并返回“success”
+				    public String execute() throws Exception {
+			        return SUCCESS;
+			    }
+			* 没有配置 result name 属性，将执行默认名称：success
+			* {1} 匹配第一个星号 ； {2} 匹配第二个星号
+				
+		-->
+		<action name="uiAction_*_*">
+			<result>/WEB-INF/pages/{1}/{2}.jsp</result>
+		</action>
+		
+		<!-- @3.1  登陆成功页 -->
+		<action name="homeAction" class="com.cskaoyan.crm.web.action.HomeAction">
+			<result>/WEB-INF/pages/frame.jsp</result>
+		</action>
+		
+	</package>
+
+	<!-- 包含其他的配置信息 -->
+	<!-- * 员工 -->
+	<include file="struts/struts-staff.xml"></include>
+	<!-- * 职务 -->
+	<include file="struts/struts-post.xml"></include>
+	<!-- * 部门 -->
+	<include file="struts/struts-department.xml"></include>
+	<!-- * 课程类别  -->
+	<include file="struts/struts-coursetype.xml"></include>
+	<!-- * 班级 -->
+	<include file="struts/struts-class.xml"></include>
+	<!-- * 咨询 -->
+	<include file="struts/struts-refer.xml"></include>
+	<!-- * 跟踪-->
+	<include file="struts/struts-follow.xml"></include>
+	<!-- * 学生 -->
+	<include file="struts/struts-student.xml"></include>
+	<!-- * 转班/升级 -->
+	<include file="struts/struts-station.xml"></include>
+	<!-- * 丢失-->
+	<include file="struts/struts-runoff.xml"></include>
+	<!-- * 就业（毕业生）-->
+	<include file="struts/struts-graduate.xml"></include>
+	
+</struts>

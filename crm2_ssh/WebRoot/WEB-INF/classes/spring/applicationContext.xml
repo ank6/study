@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- spring的公共配置
+	* 此文件有web.xml 配置的监听器进行加载 
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+       					   http://www.springframework.org/schema/beans/spring-beans.xsd
+       					   http://www.springframework.org/schema/tx 
+       					   http://www.springframework.org/schema/tx/spring-tx.xsd
+       					   http://www.springframework.org/schema/aop 
+       					   http://www.springframework.org/schema/aop/spring-aop.xsd
+       					   http://www.springframework.org/schema/context 
+       					   http://www.springframework.org/schema/context/spring-context.xsd">
+	<!-- 1 加载properties -->
+	<context:property-placeholder location="classpath:jdbcinfo.properties"/>
+	
+	<!-- 2 配置数据源(暂时无用) --> 
+	<bean  id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close"  >
+		<property name="driverClass" value="${jdbc.driverClass}"></property>
+		<property name="jdbcUrl" value="${jdbc.jdbcUrl}"></property>
+		<property name="user" value="${jdbc.user}"></property>
+		<property name="password" value="${jdbc.password}"></property>
+	</bean>
+	
+	<!-- 3 获得SessionFactory
+		* 此处仍加载hibernate.cfg.xml，但cfg.xml不用配置：基本4项和c3p0
+		* 之后添加Base时，此处将hibernate.cfg.xml 删除
+		* 目的：回顾有/无  cfg.xml 配置
+	-->
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		<!-- 3.1 基本项和c3p0 -->
+		<property name="dataSource" ref="dataSource"></property>
+		<!-- 3.2 加载hibernate核心配置文件 -->
+		<property name="configLocation" value="classpath:hibernate/hibernate.cfg.xml"></property>
+		<!-- 3.4 加载映射文件 -->
+		<property name="mappingDirectoryLocations" value="classpath:com/cskaoyan/crm/*/domain"></property>
+	</bean>
+	
+	<!-- 4 事务管理 -->
+	<!-- 4.1 事务管理器，并注入SessionFactory  -->
+	<bean id="txManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	<!-- 4.2 事务通知，事务详情配置，确定在目标类的方法（切入点）使用那种事务  -->
+	<tx:advice id="txAdvice" transaction-manager="txManager">
+		<tx:attributes>
+			<tx:method name="add*"/>
+			<tx:method name="update*"/>
+			<tx:method name="delete*"/>
+			<tx:method name="find*" read-only="true"/>
+		</tx:attributes>
+	</tx:advice>
+	<!-- 4.3 编写aop自动生成代理，将 通知(增强) 引用到 切入点上，及 通知和切入点结合：切面  -->
+	<aop:config>
+		<aop:advisor advice-ref="txAdvice" pointcut="execution(* com.cskaoyan.crm.*.service..*.*(..))"/>
+	</aop:config>
+	
+	
+	<!-- 5 导入其他配置文件：子模块 
+		* web.xml配置了  spring/applicationContext*.xml
+	<import resource="classpath:spring/applicationContext-user.xml"/>
+	<import resource="classpath:spring/applicationContext-staff.xml"/>
+	<import resource="classpath:spring/applicationContext-post.xml"/>
+	-->
+</beans>
